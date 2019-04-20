@@ -1,5 +1,7 @@
 package it.discovery.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -8,6 +10,7 @@ public class Book {
 
 	private String author;
 
+	@JsonProperty("title")
 	private String name;
 	
 	private int year;
