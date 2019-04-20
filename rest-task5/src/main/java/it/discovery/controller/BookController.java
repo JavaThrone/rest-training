@@ -5,6 +5,7 @@ import it.discovery.repository.BookRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class BookController {
     }
 
     @PostMapping
-    public Book save(@RequestBody Book book) {
+    public Book save(@Valid @RequestBody Book book) {
         bookRepository.save(book);
         return book;
     }
