@@ -10,6 +10,7 @@ import it.discovery.model.Book;
 import it.discovery.pagination.Page;
 import it.discovery.pagination.PageCriteria;
 import it.discovery.repository.BookRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,7 @@ public class BookController {
 
     @GetMapping("{id}")
     @Timed("book.findById")
+    @Cacheable("books")
     public Book findById(@PathVariable int id) {
         return Optional.ofNullable(bookRepository.findById(id))
                 .orElseThrow(() -> new BookNotFoundException(id));
