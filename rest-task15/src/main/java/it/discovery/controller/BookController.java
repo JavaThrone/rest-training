@@ -5,17 +5,17 @@ import com.github.dozermapper.core.Mapper;
 import io.micrometer.core.annotation.Timed;
 import it.discovery.dto.BookDTO;
 import it.discovery.exception.BookNotFoundException;
-import it.discovery.hateoas.BookResource;
 import it.discovery.model.Book;
 import it.discovery.pagination.Page;
 import it.discovery.pagination.PageCriteria;
 import it.discovery.repository.BookRepository;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.cache.annotation.CacheDefaults;
+import javax.cache.annotation.CacheResult;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +47,7 @@ public class BookController {
 
     @GetMapping("{id}")
     @Timed("book.findById")
-    @Cacheable("books")
+    @CacheResult(cacheName = "books")
     public Book findById(@PathVariable int id) {
         return Optional.ofNullable(bookRepository.findById(id))
                 .orElseThrow(() -> new BookNotFoundException(id));
