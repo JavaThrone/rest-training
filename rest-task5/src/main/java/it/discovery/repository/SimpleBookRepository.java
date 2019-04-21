@@ -61,4 +61,9 @@ public class SimpleBookRepository implements BookRepository {
         return true;
     }
 
+    @Override
+    public boolean isEmpty() {
+        return books.isEmpty();
+    }
+
 }

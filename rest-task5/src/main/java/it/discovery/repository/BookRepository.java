@@ -17,4 +17,6 @@ public interface BookRepository {
 	
 	boolean delete(int id);
 
+	boolean isEmpty();
+
 }
