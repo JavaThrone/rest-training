@@ -1,5 +1,6 @@
 package it.discovery.controller;
 
+import io.micrometer.core.annotation.Timed;
 import it.discovery.exception.BookNotFoundException;
 import it.discovery.model.Book;
 import it.discovery.pagination.Page;
@@ -35,6 +36,7 @@ public class BookController {
     }
 
     @GetMapping("{id}")
+    @Timed("book.findById")
     public Book findById(@PathVariable int id) {
         return Optional.ofNullable(bookRepository.findById(id))
                 .orElseThrow(() -> new BookNotFoundException(id));
