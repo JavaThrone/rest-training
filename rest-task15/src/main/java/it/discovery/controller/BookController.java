@@ -1,6 +1,9 @@
 package it.discovery.controller;
 
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
 import io.micrometer.core.annotation.Timed;
+import it.discovery.dto.BookDTO;
 import it.discovery.exception.BookNotFoundException;
 import it.discovery.hateoas.BookResource;
 import it.discovery.model.Book;
@@ -23,19 +26,22 @@ public class BookController {
 
     private final BookRepository bookRepository;
 
+    private final Mapper mapper = DozerBeanMapperBuilder.buildDefault();
+
     public BookController(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
     @GetMapping(params = {"page", "size"})
-    public ResponseEntity<List<BookResource>> search(PageCriteria pageCriteria) {
+    public ResponseEntity<List<BookDTO>> search(PageCriteria pageCriteria) {
         Page page = bookRepository.searchBooks(pageCriteria);
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-TOTAL-COUNT", String.valueOf(page.getTotalCount()));
 
         return ResponseEntity.ok().headers
                 (headers).body(page.getBooks()
-                .stream().map(BookResource::new).collect(Collectors.toList()));
+                .stream().map(book -> mapper.map(book, BookDTO.class))
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("{id}")
