@@ -38,7 +38,7 @@ public class SimpleBookRepository implements BookRepository {
     }
 
     @Override
-    public void save(Book book) {
+    public Book save(Book book) {
         if (book.getId() == 0) {
             counter++;
             book.setId(counter);
@@ -48,6 +48,7 @@ public class SimpleBookRepository implements BookRepository {
             books.put(book.getId(), book);
             System.out.println("*** Book with id=" + book.getId() + " was updated");
         }
+        return book;
     }
 
     @Override

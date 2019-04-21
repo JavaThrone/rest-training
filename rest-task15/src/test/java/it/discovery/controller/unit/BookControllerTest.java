@@ -1,49 +1,36 @@
-package it.discovery.controller;
+package it.discovery.controller.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.discovery.RestApplication;
 import it.discovery.model.Book;
+import it.discovery.repository.BookRepository;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringJUnitWebConfig(RestApplication.class)
 @AutoConfigureMockMvc
+@AutoConfigureJsonTesters
 public class BookControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    @Autowired
+    private JacksonTester<Book> jacksonTester;
 
-    @Nested
-    class GetTests {
-
-    }
-
-    @Nested
-    class PostTests {
-
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"-1", "10000"})
-    void findBook_invalidId_ReturnsNotFound(String id) throws Exception {
-        ResultActions actions = mockMvc.perform(get("/book/" + id));
-
-        actions.andExpect(status().isNotFound());
-    }
+    @MockBean
+    private BookRepository bookRepository;
 
     @Test
     void saveBook_emptyStorage_bookSaved() throws Exception {
@@ -52,14 +39,15 @@ public class BookControllerTest {
         book.setName("Spring MVC");
         book.setYear(2020);
 
+        given(bookRepository.save(book))
+                .willReturn(book);
+
         ResultActions actions = mockMvc.perform(post("/book")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(MAPPER.writeValueAsString(book)));
+                .content(jacksonTester.write(book).getJson()));
 
         actions.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.author", Matchers.equalTo(book.getAuthor())));
     }
-
 }
-

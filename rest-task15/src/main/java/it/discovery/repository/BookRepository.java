@@ -13,7 +13,7 @@ public interface BookRepository {
 
 	Page searchBooks(PageCriteria pageCriteria);
 	
-	void save(Book book);
+	Book save(Book book);
 	
 	boolean delete(int id);
 
