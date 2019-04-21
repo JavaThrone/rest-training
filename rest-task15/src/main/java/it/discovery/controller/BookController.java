@@ -3,6 +3,7 @@ package it.discovery.controller;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 import io.micrometer.core.annotation.Timed;
+import io.swagger.annotations.ApiOperation;
 import it.discovery.dto.BookDTO;
 import it.discovery.exception.BookNotFoundException;
 import it.discovery.model.Book;
@@ -34,6 +35,7 @@ public class BookController {
     }
 
     @GetMapping(params = {"page", "size"})
+    @ApiOperation("Paginated books search")
     public ResponseEntity<List<BookDTO>> search(PageCriteria pageCriteria) {
         Page page = bookRepository.searchBooks(pageCriteria);
         HttpHeaders headers = new HttpHeaders();

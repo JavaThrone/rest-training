@@ -15,8 +15,10 @@ public class LoggingInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler)
             throws Exception {
-        HandlerMethod method = (HandlerMethod) handler;
-        LOGGER.info("REST-service {} called", method.getMethod().getName());
+        if (handler instanceof HandlerMethod) {
+            HandlerMethod method = (HandlerMethod) handler;
+            LOGGER.info("REST-service {} called", method.getMethod().getName());
+        }
         return true;
     }
 }
